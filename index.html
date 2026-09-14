@@ -1,0 +1,230 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F4EDE0">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Atelier Mandala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@600;700&display=swap">
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --ink:#2E2A36;
+    --chrome:#F4EDE0;
+    --chrome-2:#E9DFCB;
+    --line:#D8CCB4;
+    --text:#3B3547;
+    --muted:#8C8498;
+    --danger:#C8432F;
+    --shadow:0 10px 30px rgba(60,45,20,.14);
+  }
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--chrome); color:var(--text);
+    font-family:'Nunito',system-ui,-apple-system,sans-serif; font-size:16px;
+    overflow:hidden;
+    -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
+    -webkit-tap-highlight-color:transparent; overscroll-behavior:none;
+  }
+  .app{
+    height:100vh; height:100dvh;
+    display:grid; grid-template-columns:1fr 84px; grid-template-rows:auto 1fr;
+    grid-template-areas:"bar palette" "stage palette";
+  }
+
+  /* ---------- barre du haut ---------- */
+  .bar{ grid-area:bar; display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:calc(8px + env(safe-area-inset-top)) 12px 8px; border-bottom:2px solid var(--line); }
+  .brand{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:21px; color:var(--ink); display:flex; align-items:center; gap:10px; }
+  .brand .name{ display:none; }
+  @media (min-width:1150px){ .brand .name{ display:inline; } }
+  .dot{ width:28px; height:28px; border-radius:50%; background:var(--current,#E5322D); border:3px solid #fff; box-shadow:0 0 0 2px var(--ink); transition:background .15s; }
+  .tabs{ display:flex; background:#fff; border:2px solid var(--line); border-radius:16px; padding:4px; gap:4px; }
+  .btn, .tab{
+    font-family:'Fredoka',sans-serif; font-weight:500; font-size:17px;
+    min-height:46px; padding:0 14px; border-radius:12px; border:2px solid var(--line); background:#fff; color:var(--ink);
+    cursor:pointer; touch-action:manipulation; display:inline-flex; align-items:center; gap:8px;
+    transition:transform .12s, background .12s, color .12s;
+  }
+  .tab{ border-color:transparent; }
+  .tab.on{ background:var(--ink); color:#fff; }
+  .btn:active, .tab:active{ transform:scale(.96); }
+  .btn:focus-visible, .tab:focus-visible, .swatch:focus-visible, .cell:focus-visible, .gcard:focus-visible{ outline:3px solid #4FC3F7; outline-offset:2px; }
+  .btn.danger{ color:var(--danger); }
+  .btn.danger.armed{ background:var(--danger); color:#fff; border-color:var(--danger); }
+  .btn[disabled]{ opacity:.4; pointer-events:none; }
+  .actions{ display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; align-items:center; }
+  .hint{ font-size:14px; color:var(--muted); font-weight:700; width:100%; }
+  @media (max-height:720px){ .hint{ display:none; } }
+  #newBtn, #pickBtn, #brushes, #drawingName{ display:none; }
+  .app.mode-mandala #newBtn{ display:inline-flex; }
+  .app.mode-drawing #pickBtn{ display:inline-flex; }
+  .app.mode-drawing #drawingName{ display:inline; }
+  .app.mode-draw #brushes{ display:flex; }
+  #drawingName{ font-family:'Fredoka',sans-serif; font-size:18px; color:var(--ink); }
+  .sm{ display:none; }
+  .brushes{ gap:4px; background:#fff; border:2px solid var(--line); border-radius:12px; padding:3px; }
+  .brushes button{ width:44px; height:40px; border:0; border-radius:9px; background:transparent; display:grid; place-items:center; cursor:pointer; touch-action:manipulation; }
+  .brushes button.on{ background:var(--chrome-2); }
+  .brushes i{ display:block; border-radius:50%; background:var(--ink); }
+
+  /* ---------- zone de dessin ---------- */
+  .stage{ grid-area:stage; display:grid; place-items:center; padding:14px; min-width:0; min-height:0; touch-action:none; }
+  .board{ position:relative; width:300px; height:300px; background:var(--paper); border-radius:26px; box-shadow:var(--shadow); overflow:hidden; }
+  .board > svg, .board > canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+  #mandala, #drawing, #paper{ display:none; }
+  .app.mode-mandala #mandala, .app.mode-drawing #drawing, .app.mode-draw #paper{ display:block; }
+  .region{ fill:#fff; stroke:var(--ink); stroke-width:1.6; stroke-linejoin:round; vector-effect:non-scaling-stroke; cursor:pointer; transition:fill .15s; }
+  .decor{ fill:none; stroke:var(--ink); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; pointer-events:none; }
+  .decor.dark{ fill:var(--ink); stroke:none; }
+  text.decor{ font-family:'Fredoka',sans-serif; font-weight:600; }
+  .region.pop{ animation:pop .18s ease-out; transform-box:fill-box; transform-origin:center; }
+  @keyframes pop{ 50%{ transform:scale(1.06);} }
+
+  /* ---------- palette ---------- */
+  .palette{ grid-area:palette; display:flex; flex-direction:column; gap:5px; padding:8px 8px 8px 6px; background:var(--chrome-2); border-left:2px solid var(--line); overflow-y:auto; min-height:0; }
+  .more{ flex:0 0 auto; height:44px; border-radius:12px; border:2px dashed var(--ink); background:#fff; color:var(--ink); font:600 26px 'Fredoka',sans-serif; cursor:pointer; touch-action:manipulation; }
+  .swatch{ flex:1 1 0; min-height:26px; border-radius:12px; border:3px solid rgba(255,255,255,.75); background:var(--c); cursor:pointer; touch-action:manipulation; padding:0; position:relative; transition:transform .12s, box-shadow .12s; box-shadow:inset 0 -3px 0 rgba(0,0,0,.12); }
+  .swatch.custom{ border-style:dashed; border-color:rgba(46,42,54,.5); }
+  .swatch.on{ transform:scale(1.12); border-color:#fff; box-shadow:0 0 0 3px var(--ink), 0 4px 12px rgba(0,0,0,.25); z-index:1; }
+  .swatch.on::after{ content:"✓"; position:absolute; inset:0; display:grid; place-items:center; font:700 18px 'Fredoka',sans-serif; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.55); }
+  .swatch.white{ border-color:var(--line); }
+  .swatch.white::before{ content:"gomme"; position:absolute; inset:0; display:grid; place-items:center; font:600 12px 'Fredoka',sans-serif; color:var(--muted); letter-spacing:.04em; }
+  .swatch.white.on::before{ display:none; }
+  .swatch.white.on::after{ color:var(--ink); text-shadow:none; }
+
+  /* ---------- fenêtres ---------- */
+  .modal[hidden]{ display:none; }
+  .modal{ position:fixed; inset:0; background:rgba(46,42,54,.45); display:grid; place-items:center; padding:16px; z-index:10; }
+  .sheet{ background:var(--chrome); border-radius:24px; box-shadow:var(--shadow); width:min(920px, 100%); max-height:100%; display:flex; flex-direction:column; overflow:hidden; }
+  .sheet header{ display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:2px solid var(--line); }
+  .sheet h2{ margin:0; font:600 22px 'Fredoka',sans-serif; color:var(--ink); flex:1; }
+  .sheet .body{ overflow:auto; padding:14px 18px 18px; -webkit-overflow-scrolling:touch; }
+  .crow{ display:grid; grid-template-columns:86px repeat(9, 1fr); gap:6px; align-items:center; margin-bottom:6px; }
+  .clabel{ font:600 14px 'Fredoka',sans-serif; color:var(--muted); text-transform:lowercase; }
+  .cell{ height:44px; border-radius:10px; border:2px solid rgba(255,255,255,.8); box-shadow:inset 0 -3px 0 rgba(0,0,0,.12); cursor:pointer; touch-action:manipulation; }
+  .cell:active{ transform:scale(.94); }
+  #gallery h3{ font:600 18px 'Fredoka',sans-serif; color:var(--ink); margin:10px 0 8px; }
+  .ggrid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:10px; }
+  .gcard{ background:#fff; border:2px solid var(--line); border-radius:16px; padding:8px; cursor:pointer; touch-action:manipulation; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .gcard:active{ transform:scale(.96); }
+  .gcard svg{ width:100%; aspect-ratio:1; }
+  .gcard svg .region, .gcard svg .decor{ stroke-width:1.2; }
+  .gcard span{ font:600 14px 'Fredoka',sans-serif; color:var(--ink); text-align:center; }
+  .export{ text-align:center; }
+  .export img{ width:min(60vh, 100%); border-radius:16px; border:2px solid var(--line); background:#fff; -webkit-touch-callout:default; }
+  .export p{ margin:12px 0 0; font-weight:700; color:var(--text); }
+  .export .row{ display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+
+  /* ---------- téléphone (portrait) ---------- */
+  @media (max-width:700px){
+    .app{ grid-template-columns:1fr; grid-template-rows:auto 1fr auto; grid-template-areas:"bar" "stage" "palette"; }
+    .bar{ padding:calc(6px + env(safe-area-inset-top)) 8px 6px; gap:6px; }
+    .brand{ gap:0; }
+    .dot{ width:24px; height:24px; }
+    .tabs{ flex:1; padding:3px; }
+    .tab{ flex:1; justify-content:center; padding:0 4px; }
+    .btn, .tab{ font-size:15px; min-height:40px; padding:0 9px; gap:5px; }
+    .actions{ margin-left:0; width:100%; gap:6px; justify-content:space-between; }
+    .hint, #drawingName{ display:none !important; }
+    .lg{ display:none; } .sm{ display:inline; }
+    .brushes button{ width:34px; height:34px; }
+    .stage{ padding:8px; }
+    .board{ border-radius:18px; }
+    .palette{ flex-direction:row; overflow-x:auto; overflow-y:hidden; border-left:0; border-top:2px solid var(--line);
+              padding:8px 10px calc(8px + env(safe-area-inset-bottom)); gap:6px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .palette::-webkit-scrollbar{ display:none; }
+    .more{ flex:0 0 48px; height:48px; }
+    .swatch{ flex:0 0 48px; height:48px; min-height:0; }
+    .swatch.on{ transform:scale(1.08); }
+    .modal{ padding:8px; }
+    .sheet{ border-radius:18px; }
+    .sheet header{ padding:10px 12px; }
+    .sheet h2{ font-size:18px; }
+    .sheet .body{ padding:10px 12px 14px; }
+    .crow{ grid-template-columns:repeat(9,1fr); gap:4px; margin-bottom:10px; }
+    .clabel{ grid-column:1 / -1; }
+    .cell{ height:34px; border-radius:8px; }
+    .ggrid{ grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px; }
+  }
+  /* ---------- téléphone en paysage ---------- */
+  @media (max-height:500px) and (min-width:701px){
+    .bar{ padding:calc(4px + env(safe-area-inset-top)) 10px 4px; gap:6px; }
+    .btn, .tab{ font-size:15px; min-height:38px; padding:0 9px; }
+    .lg{ display:none; } .sm{ display:inline; }
+    .brushes button{ width:34px; height:34px; }
+    #drawingName{ display:none !important; }
+    .stage{ padding:8px; }
+    .app{ grid-template-columns:1fr 70px; }
+    .palette{ padding:6px 6px 6px 4px; gap:4px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+</style>
+
+<div class="app mode-mandala" id="app">
+  <header class="bar">
+    <div class="brand"><span class="dot" id="dot"></span><span class="name">Atelier Mandala</span></div>
+    <div class="tabs" role="tablist">
+      <button class="tab on" data-mode="mandala" role="tab">Mandala</button>
+      <button class="tab" data-mode="drawing" role="tab">Dessins</button>
+      <button class="tab" data-mode="draw" role="tab"><span class="lg">Dessin libre</span><span class="sm">Libre</span></button>
+    </div>
+    <span id="drawingName"></span>
+    <div class="actions">
+      <div class="brushes" id="brushes" aria-label="Taille du pinceau">
+        <button aria-label="Fin"><i style="width:6px;height:6px"></i></button>
+        <button aria-label="Moyen"><i style="width:12px;height:12px"></i></button>
+        <button aria-label="Gros"><i style="width:20px;height:20px"></i></button>
+      </div>
+      <button class="btn" id="undoBtn" aria-label="Annuler">↶ <span class="lg">Annuler</span></button>
+      <button class="btn" id="newBtn">✦ <span class="lg">Nouveau mandala</span><span class="sm">Nouveau</span></button>
+      <button class="btn" id="pickBtn">✎ <span class="lg">Choisir un dessin</span><span class="sm">Choisir</span></button>
+      <button class="btn" id="saveBtn">⤓ Enregistrer</button>
+      <button class="btn danger" id="clearBtn"><span class="lg">Tout effacer</span><span class="sm">Effacer</span></button>
+    </div>
+    <div class="hint" id="hint"></div>
+  </header>
+
+  <main class="stage" id="stage">
+    <div class="board" id="board">
+      <svg id="mandala" viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg"></svg>
+      <svg id="drawing" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"></svg>
+      <canvas id="paper"></canvas>
+    </div>
+  </main>
+
+  <aside class="palette" id="palette" aria-label="Couleurs"></aside>
+</div>
+
+<div class="modal" id="colorsModal" hidden>
+  <div class="sheet">
+    <header><h2>Toutes les couleurs</h2><button class="btn" data-close="colorsModal">Fermer</button></header>
+    <div class="body" id="colorGrid"></div>
+  </div>
+</div>
+
+<div class="modal" id="galleryModal" hidden>
+  <div class="sheet">
+    <header><h2>Choisis un dessin</h2><button class="btn" data-close="galleryModal">Fermer</button></header>
+    <div class="body" id="gallery"></div>
+  </div>
+</div>
+
+<div class="modal" id="exportModal" hidden>
+  <div class="sheet">
+    <header><h2>Ton dessin</h2><button class="btn" data-close="exportModal">Fermer</button></header>
+    <div class="body export">
+      <img id="exportImg" alt="Ton dessin">
+      <p>Appuie longtemps sur l'image, puis choisis « Enregistrer l'image » pour la mettre dans Photos.</p>
+      <div class="row"><button class="btn" id="shareBtn" hidden>Partager / Enregistrer dans Photos</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="kit.js?v=4"></script>
+<script src="people.js?v=4"></script>
+<script src="app.js?v=4"></script>

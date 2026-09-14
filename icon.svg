@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="110" fill="#F4EDE0"/>
+  <g transform="translate(256 256)" fill="none" stroke="#2E2A36" stroke-width="10" stroke-linejoin="round">
+    <circle r="190" fill="#FFFFFF"/>
+    <g id="p">
+      <path d="M0 -180 C 40 -140 40 -80 0 -40 C -40 -80 -40 -140 0 -180 Z" fill="#F7C948"/>
+      <path d="M0 -180 C 40 -140 40 -80 0 -40 C -40 -80 -40 -140 0 -180 Z" fill="#E5322D" transform="rotate(45)"/>
+      <path d="M0 -180 C 40 -140 40 -80 0 -40 C -40 -80 -40 -140 0 -180 Z" fill="#3B82F6" transform="rotate(90)"/>
+      <path d="M0 -180 C 40 -140 40 -80 0 -40 C -40 -80 -40 -140 0 -180 Z" fill="#7BC043" transform="rotate(135)"/>
+      <path d="M0 -180 C 40 -140 40 -80 0 -40 C -40 -80 -40 -140 0 -180 Z" fill="#F7C948" transform="rotate(180)"/>
+      <path d="M0 -180 C 40 -140 40 -80 0 -40 C -40 -80 -40 -140 0 -180 Z" fill="#E5322D" transform="rotate(225)"/>
+      <path d="M0 -180 C 40 -140 40 -80 0 -40 C -40 -80 -40 -140 0 -180 Z" fill="#3B82F6" transform="rotate(270)"/>
+      <path d="M0 -180 C 40 -140 40 -80 0 -40 C -40 -80 -40 -140 0 -180 Z" fill="#7BC043" transform="rotate(315)"/>
+    </g>
+    <circle r="48" fill="#F472B6"/>
+    <circle r="18" fill="#FFFFFF"/>
+  </g>
+</svg>
