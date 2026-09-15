@@ -357,7 +357,7 @@
     const clone = (mode === 'mandala' ? mandalaSvg : drawSvg).cloneNode(true);
     clone.setAttribute('xmlns', NS); clone.setAttribute('width', size); clone.setAttribute('height', size);
     const st = document.createElementNS(NS, 'style');
-    st.textContent = `.region{fill:#fff;stroke:${INK};stroke-width:.55;stroke-linejoin:round}.decor{fill:none;stroke:${INK};stroke-width:.55;stroke-linecap:round;stroke-linejoin:round}.decor.dark{fill:${INK};stroke:none}text.decor{font-family:sans-serif;font-weight:700}`;
+    st.textContent = `.region{fill:#fff;stroke:${INK};stroke-width:.55;stroke-linejoin:round}.decor{fill:none;stroke:${INK};stroke-width:.55;stroke-linecap:round;stroke-linejoin:round}.decor.dark{fill:${INK};stroke:none}text.decor{font-family:sans-serif;font-weight:700}#drawing .region{stroke-width:.75}#drawing .decor{stroke-width:.4}`;
     clone.prepend(st);
     clone.querySelectorAll('.pop').forEach(n => n.classList.remove('pop'));
     const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: 'image/svg+xml;charset=utf-8' }));

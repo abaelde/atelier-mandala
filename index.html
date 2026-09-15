@@ -81,6 +81,10 @@
   .decor{ fill:none; stroke:var(--ink); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; pointer-events:none; }
   .decor.dark{ fill:var(--ink); stroke:none; }
   text.decor{ font-family:'Fredoka',sans-serif; font-weight:600; }
+  #drawing .region{ stroke-width:.75; vector-effect:none; }
+  #drawing .decor{ stroke-width:.4; vector-effect:none; }
+  .gcard svg .region{ stroke-width:1; }
+  .gcard svg .decor{ stroke-width:.6; }
   .region.pop{ animation:pop .18s ease-out; transform-box:fill-box; transform-origin:center; }
   @keyframes pop{ 50%{ transform:scale(1.06);} }
 
@@ -112,7 +116,7 @@
   .gcard{ background:#fff; border:2px solid var(--line); border-radius:16px; padding:8px; cursor:pointer; touch-action:manipulation; display:flex; flex-direction:column; align-items:center; gap:6px; }
   .gcard:active{ transform:scale(.96); }
   .gcard svg{ width:100%; aspect-ratio:1; }
-  .gcard svg .region, .gcard svg .decor{ stroke-width:1.2; }
+
   .gcard span{ font:600 14px 'Fredoka',sans-serif; color:var(--ink); text-align:center; }
   .export{ text-align:center; }
   .export img{ width:min(60vh, 100%); border-radius:16px; border:2px solid var(--line); background:#fff; -webkit-touch-callout:default; }
@@ -225,6 +229,6 @@
   </div>
 </div>
 
-<script src="kit.js?v=4"></script>
-<script src="people.js?v=4"></script>
-<script src="app.js?v=4"></script>
+<script src="kit.js?v=5"></script>
+<script src="people.js?v=5"></script>
+<script src="app.js?v=5"></script>

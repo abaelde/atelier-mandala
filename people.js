@@ -9,7 +9,7 @@
 
   /* ---------- petites briques ---------- */
   const eye = (cx, cy, o) => {
-    const E = [D(ellipse(cx, cy, 4.6, 5)), circle(cx, cy + 0.6, 3), K(circle(cx + 0.3, cy + 0.9, 1.6))];
+    const E = [path(`M${P(cx - 4.1, cy)} C${P(cx - 4.2, cy - 6)} ${P(cx + 4.2, cy - 6)} ${P(cx + 4.1, cy)} C${P(cx + 4, cy + 5)} ${P(cx - 4, cy + 5)} ${P(cx - 4.1, cy)} Z`), K(ellipse(cx + 0.6, cy, 2.1, 3)), { t: 'circle', a: { cx: cx + 1.2, cy: cy - 1.2, r: 0.8, style: 'fill:white;stroke:none' }, decor: true }];
     if (o.lashes) E.push(D(path(`M${P(cx - 4.2, cy - 2.4)} l-2.4 -2 M${P(cx - 2.6, cy - 4.2)} l-1.6 -2.6 M${P(cx + 4.2, cy - 2.4)} l2.4 -2 M${P(cx + 2.6, cy - 4.2)} l1.6 -2.6`)));
     return E;
   };
@@ -27,7 +27,7 @@
     else if (o.mouth === 'oh') E.push(ellipse(100, 63, 3.5, 4.5));
     else E.push(D(path('M91 60 q9 10 18 0')));
     // joues
-    E.push(circle(83, 58, 3.5)); E.push(circle(117, 58, 3.5));
+    E.push(D(path('M81 58 q2 -1 4 0 M115 58 q2 -1 4 0')));
     if (o.freckles) [[86, 55], [89, 58], [111, 55], [114, 58], [84, 60], [116, 60]].forEach(p => E.push(K(circle(p[0], p[1], 0.9))));
     return E;
   }
@@ -54,7 +54,7 @@
   };
 
   /* ---------- hauts ---------- */
-  const torso = () => path('M74 78 Q74 72 80 72 H120 Q126 72 126 78 V130 H74 Z');
+  const torso = () => path('M74 80 Q74 75 82 73 L91 71 Q100 76 109 71 L118 73 Q126 75 126 80 L122 103 L125 129 Q100 134 75 129 L78 103 Z');
   const collarRound = () => D(path('M92 72 q8 7 16 0'));
   const collarV = () => D(path('M91 72 L100 86 L109 72'));
   const collarShirt = () => [poly([[91, 72], [100, 82], [84, 80]]), poly([[109, 72], [100, 82], [116, 80]])];
@@ -62,7 +62,7 @@
   const pocket = (x, y, w, h) => [rect(x, y, w, h, 2), D(path(`M${P(x, y + 3)} h${w}`))];
   const TOPS = {
     tee: () => [torso(), collarRound()],
-    stripes: () => [torso(), rect(74, 88, 52, 7), rect(74, 102, 52, 7), rect(74, 116, 52, 7), collarRound()],
+    stripes: () => [torso(), path('M75.4 88 H124.6 L123.4 95 H76.6 Z'), path('M77.8 102 H122.2 L122.7 109 H77.3 Z'), path('M76.5 116 H123.5 L124.3 123 H75.7 Z'), collarRound()],
     shirt: () => [torso(), ...collarShirt(), line(100, 82, 100, 130), ...buttons([92, 104, 116])],
     blouse: () => [torso(), ...collarShirt(), line(100, 82, 100, 130), ...buttons([92, 104, 116]), ...pocket(78, 92, 14, 12)],
     dress: () => [path('M78 72 H122 Q126 72 126 78 L124 102 Q100 108 76 102 L74 78 Q74 72 78 72 Z'), path('M76 102 Q100 108 124 102 L140 170 Q100 178 60 170 Z'),
@@ -72,7 +72,7 @@
       path('M80 128 Q100 134 120 128 L128 150 Q100 156 72 150 Z'),
       D(path('M70 176 Q80 168 90 176 T110 176 T130 176 T150 176')), rect(74, 96, 52, 8, 4), heart(100, 88, 5), collarRound()],
     tunic: () => [path('M78 72 H122 Q126 72 126 78 L130 138 L122 146 L114 138 L106 146 L98 138 L90 146 L82 138 L74 146 L70 138 Z'), rect(74, 104, 52, 7, 3), collarV()],
-    jacket: () => [torso(), rect(74, 94, 52, 6), rect(74, 118, 52, 6), ...pocket(78, 104, 14, 10), ...pocket(108, 104, 14, 10), line(100, 72, 100, 130), collarV()],
+    jacket: () => [torso(), path('M76.4 94 H123.6 L122.5 100 H77.5 Z'), path('M76.3 118 H123.7 L124.4 124 H75.6 Z'), ...pocket(78, 104, 14, 10), ...pocket(108, 104, 14, 10), line(100, 72, 100, 130), collarV()],
     coat: () => [path('M70 80 Q70 72 78 72 H122 Q130 72 130 80 V144 H70 Z'), poly([[88, 72], [112, 72], [100, 92]]), poly([[88, 72], [100, 92], [82, 88]]), poly([[112, 72], [100, 92], [118, 88]]),
       ...buttons([104, 116, 128]), ...pocket(76, 120, 14, 12), ...pocket(110, 120, 14, 12), rect(108, 88, 14, 8, 1), D(path('M111 92 h8'))],
     overalls: () => [torso(), collarRound(), rect(84, 84, 32, 46, 4), rect(84, 72, 6, 16, 2), rect(110, 72, 6, 16, 2), K(circle(87, 88, 2.2)), K(circle(113, 88, 2.2)), ...pocket(92, 96, 16, 12)],
@@ -91,7 +91,7 @@
   };
 
   /* ---------- bas et chaussures ---------- */
-  const legs = () => [rect(81, 126, 17, 52, 6), rect(102, 126, 17, 52, 6)];
+  const legs = () => [path('M80 126 H100 L98 149 L95 177 Q87 180 79 176 L81 150 Z'), path('M100 126 H120 L119 150 L122 176 Q114 180 106 177 L102 149 Z')];
   const BOTTOMS = {
     pants: () => [...legs(), D(path('M81 170 h17 M102 170 h17'))],
     jeans: () => [...legs(), D(path('M84 132 q5 4 10 0 M106 132 q5 4 10 0 M81 170 h17 M102 170 h17')), rect(78, 124, 44, 7, 2), rect(97, 124, 6, 7, 1)],
@@ -202,13 +202,12 @@
     // bras
     const arm = (side, a, hand, held) => {
       const sx = side < 0 ? 78 : 122, ang = side < 0 ? a : -a, tr = `rotate(${f(ang)} ${sx} 78)`;
-      E.push(rect(sx - 6.5, 74, 13, 46, 6.5, { transform: tr }));
+      E.push(path(`M${sx - 6} 79 Q${sx - 6} 72 ${sx + 1} 73 Q${sx + 8} 74 ${sx + 7} 82 L${sx + 5} 100 L${sx + 5.5} 117 Q${sx} 122 ${sx - 5.5} 117 L${sx - 6.5} 99 Z`, { transform: tr }));
       if (o.sleeve === 'short') E.push(rect(sx - 7, 73, 14, 18, 6, { transform: tr }));
       if (o.sleeve === 'long') E.push(rect(sx - 7, 110, 14, 6, 2, { transform: tr }));
       if (o.sleeve === 'puff') E.push(ellipse(sx, 80, 11, 9));
       if (o.top === 'armor' || o.top === 'suit') E.push(rect(sx - 7, 92, 14, 5, 2, { transform: tr }));
-      E.push(circle(hand[0], hand[1], 7));
-      E.push(circle(hand[0] - side * 6, hand[1] - 3, 2.6));
+      E.push(place([path('M-5 -5 Q-8 -2 -6 3 L-3 7 Q1 10 5 6 Q8 3 6 -2 L3 -6 Q0 -8 -2 -4 Q-5 -8 -5 -5 Z'), D(path('M-2 -3 L1 0 M1 5 l3 -2'))], hand[0], hand[1], 1, side * -18));
     };
     if (o.held === 'guitar') E.push(...HELD.guitar());
     arm(-1, o.armL, hL);
@@ -221,7 +220,7 @@
     if (has('bag')) { E.push(D(path('M120 76 L140 118'))); E.push(rect(126, 114, 26, 20, 3)); E.push(path('M126 114 h26 v-4 q-13 -6 -26 0 z')); }
 
     // tête
-    E.push(circle(100, 46, 21));
+    E.push(path('M79 44 C79 19 121 19 121 44 L120 53 C119 61 108 70 100 70 C92 70 81 61 80 53 Z'));
     E.push(...face(o.face));
     if (has('glasses')) { E.push(D(circle(91, 50, 7))); E.push(D(circle(109, 50, 7))); E.push(line(98, 50, 102, 50)); E.push(line(84, 49, 80, 47)); E.push(line(116, 49, 120, 47)); }
     if (has('goggles')) { E.push(D(ellipse(91, 50, 7.5, 6))); E.push(D(ellipse(109, 50, 7.5, 6))); E.push(rect(98, 48.5, 4, 3, 1)); E.push(D(path('M83.5 50 Q76 46 79 40 M116.5 50 Q124 46 121 40'))); }
@@ -326,7 +325,7 @@
     E.push(rect(71.5, 74, 13, 46, 6.5, { transform: 'rotate(70 78 78)' })); E.push(circle(hL[0], hL[1], 7)); E.push(circle(hL[0] + 6, hL[1] - 3, 2.6));
     E.push(rect(115.5, 74, 13, 46, 6.5, { transform: 'rotate(-120 122 78)' })); E.push(circle(hR[0], hR[1], 7)); E.push(circle(hR[0] - 6, hR[1] - 3, 2.6));
     E.push(place([path('M0 -12 Q-14 -18 -16 -4 Q-14 8 0 14 Q14 8 16 -4 Q14 -18 0 -12 Z'), circle(0, 0, 4)], hR[0] - 2, hR[1] - 8, 1));
-    E.push(circle(100, 46, 21)); E.push(...face({ lashes: true })); E.push(...HAIR_FRONT.long());
+    E.push(path('M79 44 C79 19 121 19 121 44 L120 53 C119 61 108 70 100 70 C92 70 81 61 80 53 Z')); E.push(...face({ lashes: true })); E.push(...HAIR_FRONT.long());
     E.push(star(80, 34, 5)); E.push(...flower(118, 30, 4));
     return E;
   }
@@ -483,4 +482,136 @@
     { group: 'Héros et légendes', items: HEROS },
     { group: 'Sports et loisirs', items: SPORTS },
   );
+  /* Scènes dessinées à la main : silhouettes continues, plans séparés et
+     accessoires contenus dans la page. Les surfaces restent des zones SVG. */
+  const glint = (x, y) => ({ t: 'circle', a: { cx: x, cy: y, r: .85, style: 'fill:white;stroke:none' }, decor: true });
+  function storyFace(x, y, feminine) {
+    return [place([
+      path('M-21 -5 C-22 -30 20 -31 22 -7 L21 5 C19 16 7 23 0 23 C-9 23 -20 14 -21 5 Z'),
+      D(path('M-15 -2 Q-11 -5 -7 -3 M6 -3 Q11 -6 15 -2')),
+      ellipse(-10, 3, 3.8, 4.8), ellipse(10, 3, 3.8, 4.8),
+      K(ellipse(-9.3, 3.4, 2.1, 3.2)), K(ellipse(10.7, 3.4, 2.1, 3.2)), glint(-8.8, 2), glint(11.2, 2),
+      D(path('M0 4 q-3 5 1 5 M-8 13 Q0 21 9 12 M-16 10 l3 1 M14 10 l3 -1')),
+      ...(feminine ? [D(path('M-14 1 l-2 -2 M14 0 l2 -2'))] : []),
+    ], x, y)];
+  }
+  function fireStory(feminine) {
+    return [
+      rect(5, 5, 190, 190, 8),
+      // Ciel, caserne et camion au second plan.
+      cloud(37, 28, .65), cloud(161, 30, .65),
+      path('M6 155 Q58 148 110 155 T194 156 V187 Q194 195 187 195 H13 Q5 195 5 187 Z'),
+      rect(15, 59, 51, 84, 2), path('M12 59 L40 45 L69 59 Z'),
+      rect(23, 72, 35, 48, 15), D(path('M24 91 h33 M24 98 h33 M24 105 h33 M24 112 h33')),
+      rect(28, 62, 25, 6, 1),
+      path('M13 113 Q13 109 17 109 H55 L67 120 H78 Q82 120 82 124 V145 H13 Z'),
+      path('M19 114 H39 V127 H19 Z'), path('M44 114 H53 L63 127 H44 Z'),
+      rect(16, 131, 63, 5, 1), rect(48, 138, 16, 5, 1),
+      rect(22, 103, 12, 6, 2), rect(13, 144, 69, 5, 2),
+      circle(27, 148, 9), circle(27, 148, 4), circle(67, 148, 9), circle(67, 148, 4),
+      // Tuyau : une seule surface fermée, reliée à la lance.
+      path('M139 115 C161 145 145 178 119 184 C91 191 49 188 31 182 C17 177 22 163 36 164 C47 165 48 176 39 179 C56 183 99 185 118 178 C142 170 154 146 134 118 Z'),
+      // Jambes, avec une posture légèrement décalée.
+      path('M78 133 L99 137 L93 161 L85 175 L68 172 L75 153 Z'),
+      path('M96 135 L117 132 L117 153 L126 173 L109 177 L98 157 Z'),
+      path('M69 163 L89 168 L86 178 Q75 181 64 178 L62 174 Z'),
+      path('M107 168 L123 164 L128 175 Q140 174 141 182 Q124 188 108 182 Z'),
+      path('M64 177 Q76 180 86 177 L86 182 Q74 186 62 182 Z'),
+      path('M108 181 Q125 185 141 180 L142 184 Q124 190 108 185 Z'),
+      // Chevelure, cou et veste aux contours souples.
+      ...(feminine ? [path('M112 61 C139 54 135 99 143 104 Q123 111 121 91 L115 72 Z'), D(path('M123 71 Q126 91 134 100'))] : []),
+      path('M88 80 L105 80 L109 95 L85 95 Z'),
+      path('M75 92 L88 87 Q97 94 107 87 L120 94 L115 115 L121 140 Q98 148 73 138 L78 114 Z'),
+      path('M76 114 Q96 120 116 115 L117 122 Q97 126 75 121 Z'),
+      path('M74 132 Q97 141 120 133 L121 140 Q98 148 73 138 Z'),
+      path('M87 87 L98 98 L84 100 L80 91 Z'), path('M106 87 L98 98 L112 101 L116 93 Z'),
+      D(path('M98 98 L96 138 M78 105 l5 3 M109 105 l5 -3')),
+      path('M79 124 L90 126 L89 135 L78 132 Z'), path('M103 127 L114 125 L115 133 L103 136 Z'),
+      // Bras gauche plié, bras droit tenant la lance.
+      path('M78 93 Q69 88 64 102 L56 122 Q54 129 62 133 L78 139 L82 128 L69 123 L81 103 Z'),
+      path('M73 127 L83 130 L80 140 L70 136 Z'),
+      path('M81 130 Q86 127 91 132 L97 136 Q99 140 94 142 L86 141 L80 138 Z'),
+      D(path('M87 135 l6 3 M85 138 l6 2')),
+      path('M116 93 Q125 91 130 103 L135 112 L145 110 L149 121 L131 126 Q124 126 121 119 L112 105 Z'),
+      path('M136 111 L144 109 L149 121 L140 124 Z'),
+      // Lance et doigts par-dessus la poignée.
+      place([path('M-5 -5 H15 L25 -8 V8 L15 5 H-5 Z'), rect(13, -7, 5, 14, 1), rect(24, -9, 5, 18, 1)], 144, 112, 1, -28),
+      path('M144 111 Q148 106 152 109 L156 113 Q158 117 154 119 L148 120 L145 117 Z'),
+      D(path('M148 112 l4 3 M148 116 l3 2')),
+      // Visage et casque au premier plan.
+      ...storyFace(97, 64, feminine),
+      path('M75 61 Q74 42 96 41 Q117 42 118 60 Q108 50 99 55 Q89 45 75 61 Z'),
+      path('M71 56 C70 15 120 18 124 55 L121 59 L74 60 Z'),
+      path('M91 28 Q95 25 100 28 L103 53 L94 54 Z'),
+      path('M67 55 Q94 58 125 52 Q130 53 127 59 Q96 68 68 61 Q64 59 67 55 Z'),
+      path('M88 38 L105 36 L105 47 Q98 54 91 48 Z'),
+      path('M96 40 Q91 45 97 48 Q102 46 99 42 L98 44 Z'),
+      // Jet et gouttes fermées, donc coloriables.
+      path('M170 95 Q184 83 187 65 Q192 84 173 99 Z'),
+      path('M177 105 Q190 101 192 92 Q196 105 179 108 Z'),
+      path('M174 81 q-4 -6 1 -10 q5 7 -1 10 Z'),
+      path('M184 55 q-4 -5 0 -9 q5 6 0 9 Z'),
+      D(path('M18 190 h18 M151 184 h18 M155 164 h12')),
+      ...flower(177, 171, 4), D(path('M177 176 v10 M177 182 q-7 -6 -9 -2')),
+    ];
+  }
+  function kitchenStory() {
+    return [
+      rect(5, 5, 190, 190, 8),
+      // Fenêtre à petits bois et étagère à bocaux.
+      rect(15, 25, 44, 60, 20), rect(19, 29, 36, 52, 17),
+      path('M20 66 Q34 50 54 67 V80 H20 Z'), circle(37, 44, 7),
+      rect(35, 29, 4, 52, 1), rect(19, 53, 36, 4, 1), rect(12, 82, 50, 5, 2),
+      rect(140, 49, 44, 5, 2), rect(147, 33, 14, 16, 3), rect(146, 30, 16, 4, 1),
+      rect(166, 28, 14, 21, 3), rect(165, 25, 16, 4, 1), heart(154, 41, 3),
+      ellipse(173, 39, 3, 5), D(path('M173 36 v6 M146 55 v5 M178 55 v5')),
+      // Crédence et meubles derrière le personnage.
+      rect(6, 102, 188, 55, 1),
+      D(path('M6 113 h188 M6 126 h188 M6 139 h188 M24 102 v11 M48 102 v11 M144 102 v11 M168 102 v11 M12 113 v13 M36 113 v13 M156 113 v13 M180 113 v13')),
+      // Plante aromatique dans un pot.
+      path('M24 102 L21 90 H38 L35 102 Z'), rect(20, 87, 19, 4, 1),
+      D(path('M30 87 v-16')),
+      path('M30 82 Q18 82 20 74 Q29 73 30 82 Z'), path('M30 77 Q40 77 41 68 Q31 68 30 77 Z'),
+      // Cheveux, cou, veste et tablier.
+      path('M80 60 Q74 32 101 33 Q128 32 120 69 L130 98 Q118 108 111 86 L84 88 Q78 102 72 94 Z'),
+      D(path('M117 71 Q116 87 123 94')),
+      path('M92 78 H107 L111 96 H88 Z'),
+      path('M79 90 L91 86 Q101 94 109 86 L122 92 L124 125 L130 153 H72 L76 123 Z'),
+      path('M90 87 L101 96 L88 101 L83 91 Z'), path('M109 87 L101 96 L113 101 L118 91 Z'),
+      path('M89 101 Q101 107 113 101 L120 145 H81 Z'),
+      D(path('M89 101 L85 93 M113 101 l5 -8')),
+      path('M92 119 Q101 123 110 119 L109 132 Q101 136 93 132 Z'), heart(101, 126, 3),
+      // Bras levé et fouet : un geste de préparation.
+      path('M80 92 Q73 88 69 96 L57 114 Q55 121 63 124 L84 128 L87 116 L71 115 L85 101 Z'),
+      path('M79 116 L87 116 L87 128 L79 128 Z'),
+      path('M86 117 Q94 113 99 119 L100 125 Q98 130 93 128 L87 126 Z'),
+      path('M118 92 Q125 89 130 100 L138 107 L147 94 L156 100 L144 121 Q140 126 133 122 L118 111 Z'),
+      path('M145 97 L149 91 L158 97 L154 104 Z'),
+      place([rect(-2.5, -7, 5, 27, 2), path('M-2 -7 C-18 -23 -9 -41 0 -39 C10 -41 17 -23 2 -7 Z'), D(path('M0 -39 C-5 -28 -5 -17 0 -7 C5 -17 5 -28 0 -39 M0 -39 v32'))], 154, 88, 1, 22),
+      path('M149 93 Q146 88 150 84 Q153 82 156 86 L160 89 Q162 94 158 98 L153 97 Z'),
+      D(path('M152 88 l4 3 M151 92 l4 3')),
+      ...storyFace(101, 60, true),
+      path('M79 58 Q77 36 101 37 Q121 36 122 56 Q112 54 110 44 Q100 57 88 50 Q85 56 79 58 Z'),
+      // Toque à grands volumes doux.
+      path('M79 39 C63 35 66 18 79 19 C81 8 95 8 101 16 C111 5 128 14 126 24 C140 30 129 43 120 40 Z'),
+      path('M80 37 Q101 42 121 37 L119 48 Q102 53 82 47 Z'),
+      D(path('M88 39 l1 7 M98 41 v7 M110 40 l-1 7 M81 21 q-3 4 0 9 M119 24 q3 4 0 8')),
+      // Îlot, grand saladier, œufs et torchon au premier plan.
+      rect(15, 148, 170, 42, 3), rect(13, 141, 174, 8, 3),
+      rect(23, 156, 67, 26, 3), rect(99, 156, 77, 26, 3), rect(44, 161, 23, 3, 1),
+      path('M81 124 Q105 119 132 124 Q130 145 107 145 Q87 143 81 124 Z'),
+      ellipse(106.5, 124, 25.5, 5),
+      path('M88 124 Q93 117 98 123 Q104 114 111 123 Q119 118 125 125 Z'),
+      D(path('M90 131 Q94 138 100 138')),
+      ellipse(48, 138, 24, 3), ellipse(39, 132, 6, 8, { transform: 'rotate(-28 39 132)' }), ellipse(52, 132, 6, 8, { transform: 'rotate(18 52 132)' }),
+      path('M140 141 H163 L160 176 Q150 180 139 176 Z'),
+      D(path('M144 146 L143 173 M150 147 L149 174 M156 147 L155 174')),
+      path('M139 169 Q150 173 161 169 L160 175 Q150 179 139 175 Z'),
+      rect(168, 118, 13, 22, 3), rect(169, 114, 11, 5, 1), ellipse(174.5, 130, 3, 4),
+    ];
+  }
+  const illustrated = { pompier: () => fireStory(false), pompiere: () => fireStory(true), cheffe: kitchenStory };
+  for (const item of METIERS) {
+    if (illustrated[item.id]) item.make = illustrated[item.id];
+  }
 })();
